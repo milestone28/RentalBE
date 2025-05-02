@@ -7,5 +7,6 @@ namespace Rental.Domain.Interfaces
     {
         Task<string> UploadFileAsync(string fileName, IFormFile file);
         Task DeleteFileAsync(string fileName);
+        string GetBlobSasUrl(string blobUrl);
     }
 }

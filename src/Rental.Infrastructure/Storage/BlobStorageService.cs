@@ -2,6 +2,7 @@
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Rental.Domain.Interfaces;
@@ -37,6 +38,24 @@ namespace Rental.Infrastructure.Storage
             var containerClient = new BlobContainerClient(_settings.ConnectionString, _settings.ContainerName);
             var blobClient = containerClient.GetBlobClient(fileName);
             await blobClient.DeleteIfExistsAsync();
+        }
+
+        public string GetBlobSasUrl(string blobUrl)
+        {
+            var uri = new Uri(blobUrl);
+            var blobName = uri.Segments.Last();
+            var sasBuilder = new BlobSasBuilder()
+            {
+                BlobContainerName = _settings.ContainerName,
+                Resource = "b",
+                StartsOn = DateTimeOffset.UtcNow,
+                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(30),
+                BlobName = blobName
+            };
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+            var blobServiceClient = new BlobServiceClient(_settings.ConnectionString);
+            var sasToken = sasBuilder.ToSasQueryParameters(new Azure.Storage.StorageSharedKeyCredential(_settings.AccountName, _settings.AccountKey)).ToString();
+            return $"{blobUrl}?{sasToken}";
         }
     }
 }

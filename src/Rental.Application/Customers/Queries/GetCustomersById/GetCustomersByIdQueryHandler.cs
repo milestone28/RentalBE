@@ -8,13 +8,17 @@ using Rental.Domain.Interfaces;
 
 namespace Rental.Application.Customers.Queries.GetCustomersById
 {
-    public class GetCustomersByIdQueryHandler(ILogger<GetCustomersByIdQueryHandler> logger, IMapper mapper, ICustomerRepository customerRepository) : IRequestHandler<GetCustomersByIdQuery, CustomersDtos>
+    public class GetCustomersByIdQueryHandler(ILogger<GetCustomersByIdQueryHandler> logger, IMapper mapper, ICustomerRepository customerRepository, IBlobStorageService blobStorageService) : IRequestHandler<GetCustomersByIdQuery, CustomersDtos>
     {
         public async Task<CustomersDtos> Handle(GetCustomersByIdQuery request, CancellationToken cancellationToken)
         {   
             logger.LogInformation($"Getting customer {request.Id}");
             var customer = await customerRepository.GetCustomersById(request.Id) ?? throw new NotFoundException(nameof(Customer),request.Id.ToString());
             var customerDto = mapper.Map<CustomersDtos>(customer);
+            if (customerDto.customerImageUrl != null || !String.IsNullOrEmpty(customerDto.customerImageUrl))
+            {
+              customerDto.customerImageUrl = blobStorageService.GetBlobSasUrl(customerDto.customerImageUrl);
+            }
             return customerDto;
         }
     }
