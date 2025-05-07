@@ -31,6 +31,7 @@ namespace Rental.Infrastructure.Storage
             {
                 await blobClient.UploadAsync(stream, httpHeaders);
             }
+
             return blobClient.Uri.ToString();
         }
         public async Task DeleteFileAsync(string fileName)

@@ -5,6 +5,7 @@ using Rental.Application.Customers.Command.CreateCustomer;
 using Rental.Application.Customers.Command.DeleteCustomer;
 using Rental.Application.Customers.Command.TempDeleteCustomer;
 using Rental.Application.Customers.Command.UpdateCustomer;
+using Rental.Application.Customers.Command.UploadCustomerImage;
 using Rental.Application.Customers.DTOs;
 using Rental.Application.Customers.Queries.GetAllCustomers;
 using Rental.Application.Customers.Queries.GetCustomersById;
@@ -14,7 +15,7 @@ namespace Rental.API.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class CustomersController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
@@ -36,6 +37,18 @@ namespace Rental.API.Controllers
         {
             var customerId = await mediator.Send(command);
             return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, null);
+        }
+
+        [HttpPost("Image/{id:Guid}")]
+        public async Task<ActionResult> UploadCustomerImage([FromRoute] Guid id, IFormFile? formFile)
+        {
+            var command = new UploadCustomerImageCommand()
+            {
+                ImageUpload = formFile,
+                Id = id
+            };
+            await mediator.Send(command);
+            return NoContent();
         }
 
         [HttpPut("{id:Guid}")]

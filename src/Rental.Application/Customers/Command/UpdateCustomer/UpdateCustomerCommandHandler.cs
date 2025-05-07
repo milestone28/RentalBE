@@ -14,9 +14,9 @@ namespace Rental.Application.Customers.Command.UpdateCustomer
     {
         public async Task Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Updating restaurant with id : {RestaurantId} with {@UpdatedRestaurant}", request.Id, request);
-            var restaurant = await customerRepository.GetCustomersById(request.Id) ?? throw new NotFoundException(nameof(Customer), request.Id.ToString());
-            mapper.Map(request, restaurant);
+            logger.LogInformation("Updating restaurant with id : {CustomerId} with {@UpdatedCustomer}", request.Id, request);
+            var customer = await customerRepository.GetCustomersById(request.Id) ?? throw new NotFoundException(nameof(Customer), request.Id.ToString());
+            mapper.Map(request, customer);
             await customerRepository.SaveChanges();
         }
     }

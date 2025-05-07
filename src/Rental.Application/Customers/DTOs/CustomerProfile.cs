@@ -3,6 +3,7 @@ using AutoMapper;
 using Rental.Application.Customers.Command.CreateCustomer;
 using Rental.Application.Customers.Command.TempDeleteCustomer;
 using Rental.Application.Customers.Command.UpdateCustomer;
+using Rental.Application.Customers.Command.UploadCustomerImage;
 using Rental.Domain.Entities;
 
 namespace Rental.Application.Customers.DTOs
@@ -37,7 +38,6 @@ namespace Rental.Application.Customers.DTOs
             CreateMap<TempDeleteCustomerCommand, Customer>()
                  .ForMember(d => d.DateDeleted, opt => opt.MapFrom(s => DateTime.UtcNow.ToLocalTime()))
                  .ForMember(d => d.IsDeleted, opt => opt.MapFrom(s => true));
-
         }
     }
 }

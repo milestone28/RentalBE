@@ -1,6 +1,5 @@
 ﻿
 
-using Microsoft.AspNetCore.Http;
 using Rental.Domain.Exceptions;
 
 namespace Rental.API.Middlewares
