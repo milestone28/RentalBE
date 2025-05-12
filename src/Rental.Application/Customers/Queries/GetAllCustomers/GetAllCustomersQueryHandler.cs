@@ -5,18 +5,20 @@ using Rental.Application.Customers.DTOs;
 using Rental.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Rental.Application.Common;
 
 namespace Rental.Application.Customers.Queries.GetAllCustomers
 {
     public class GetAllCustomersQueryHandlerd(ILogger<GetAllCustomersQueryHandlerd> _logger, IMapper _mapper, ICustomerRepository _customerRepository) 
-        : IRequestHandler<GetAllCustomersQuery, IEnumerable<CustomersDtos>>
+        : IRequestHandler<GetAllCustomersQuery, PageResult<CustomersDtos>>
     {
-        public async Task<IEnumerable<CustomersDtos>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)
+        public async Task<PageResult<CustomersDtos>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling GetAllCustomersQuery");
-            var customers = await _customerRepository.GetAllCustomers();
-           var customersDtos = _mapper.Map<IEnumerable<CustomersDtos>>(customers);
-            return customersDtos;
+            var (customers, totalCount) = await _customerRepository.GetAllCustomers(request.searchPhrase,request.PageSize,request.PageNumber, request.SortBy, request.SortDirection);
+            var customersDtos = _mapper.Map<IEnumerable<CustomersDtos>>(customers);
+            var result = new PageResult<CustomersDtos>(customersDtos, totalCount, request.PageSize, request.PageNumber);
+            return result;
         }
     }
 }

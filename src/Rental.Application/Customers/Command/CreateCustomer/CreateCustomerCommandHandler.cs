@@ -5,7 +5,6 @@ using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Rental.Application.Helper;
 
 namespace Rental.Application.Customers.Command.CreateCustomer
 {

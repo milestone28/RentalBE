@@ -19,9 +19,9 @@ namespace Rental.API.Controllers
     public class CustomersController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomersDtos>>> GetAllCustomers()
+        public async Task<ActionResult<IEnumerable<CustomersDtos>>> GetAllCustomers([FromQuery] GetAllCustomersQuery query)
         {
-            var customers = await mediator.Send(new GetAllCustomersQuery());
+            var customers = await mediator.Send(query);
             return Ok(customers);
         }
 
@@ -33,20 +33,15 @@ namespace Rental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCustomer([FromForm] CreateCustomerCommand command)
+        public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
         {
             var customerId = await mediator.Send(command);
             return CreatedAtAction(nameof(GetCustomerById), new { id = customerId }, null);
         }
 
-        [HttpPost("Image/{id:Guid}")]
-        public async Task<ActionResult> UploadCustomerImage([FromRoute] Guid id, IFormFile? formFile)
+        [HttpPost("Image")]
+        public async Task<ActionResult> UploadCustomerImage([FromForm] UploadCustomerImageCommand command)
         {
-            var command = new UploadCustomerImageCommand()
-            {
-                ImageUpload = formFile,
-                Id = id
-            };
             await mediator.Send(command);
             return NoContent();
         }

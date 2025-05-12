@@ -1,16 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rental.Domain.Constant;
 using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
 using Rental.Infrastructure.Persistence;
+using System.Linq.Expressions;
 
 namespace Rental.Infrastructure.Repositories
 {
     internal class CustomerRepository(RentalDBContext _dbContext) : ICustomerRepository
     {
-        public async Task<IEnumerable<Customer>> GetAllCustomers()
+        public async Task<(IEnumerable<Customer>, int)> GetAllCustomers(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
         {
-            var customers = await _dbContext.Customers.ToListAsync();
-            return customers;
+            string searchPhraseLower = string.IsNullOrEmpty(searchPhrase) ? "" : searchPhrase.ToLower();
+            var baseQuery = _dbContext.Customers.Where(r=> searchPhrase == null || (r.Name.ToLower().Contains(searchPhraseLower)));
+            var totalCount = await baseQuery.CountAsync();
+
+            if (sortBy != null)
+            {
+
+                sortBy = sortBy!.ToLower();
+                //sortBy = string.Concat(sortBy[0].ToString().ToUpper(), sortBy.AsSpan(1));
+
+                var columnSelector = new Dictionary<string, Expression<Func<Customer, object>>>
+                {
+                    { nameof(Customer.Name).ToLower() , r => r.Name },
+                    { "datecreated", r => r.DateCreated }
+                };
+
+                var selectedColumn = columnSelector[sortBy];
+
+                baseQuery = sortDirection == SortDirection.Ascending
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var _limitTotalPage = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            if (pageNumber > _limitTotalPage)
+            {
+                pageNumber = _limitTotalPage;
+            }
+
+            var customers = await baseQuery.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+            return (customers, totalCount);
         }
         public async Task<Customer?> GetCustomersById(Guid id)
         {
