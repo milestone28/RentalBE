@@ -15,7 +15,7 @@ namespace Rental.Application.Customers.Queries.GetAllCustomers
         public async Task<PageResult<CustomersDtos>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling GetAllCustomersQuery");
-            var (customers, totalCount) = await _customerRepository.GetAllCustomers(request.searchPhrase,request.PageSize,request.PageNumber, request.SortBy, request.SortDirection);
+            var (customers, totalCount) = await _customerRepository.GetAllCustomers(request.searchPhrase,request.PageSize,request.PageNumber, request.SortBy, request.SortDirection, request.isDeleted);
             var customersDtos = _mapper.Map<IEnumerable<CustomersDtos>>(customers);
             var result = new PageResult<CustomersDtos>(customersDtos, totalCount, request.PageSize, request.PageNumber);
             return result;

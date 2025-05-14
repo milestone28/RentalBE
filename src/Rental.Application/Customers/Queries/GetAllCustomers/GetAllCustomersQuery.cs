@@ -14,6 +14,6 @@ namespace Rental.Application.Customers.Queries.GetAllCustomers
         public SortDirection SortDirection { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        
+        public bool isDeleted { get; set; } = false; 
     }
 }

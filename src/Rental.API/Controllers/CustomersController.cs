@@ -59,10 +59,9 @@ namespace Rental.API.Controllers
         [HttpPatch("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> TempDeleteCustomer([FromRoute] Guid id, TempDeleteCustomerCommand command)
+        public async Task<IActionResult> TempDeleteCustomer([FromRoute] Guid id)
         {
-            command.Id = id;
-            await mediator.Send(command);
+            await mediator.Send(new TempDeleteCustomerCommand(id));
             return NoContent();
         }
 

@@ -9,10 +9,10 @@ namespace Rental.Infrastructure.Repositories
 {
     internal class CustomerRepository(RentalDBContext _dbContext) : ICustomerRepository
     {
-        public async Task<(IEnumerable<Customer>, int)> GetAllCustomers(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
+        public async Task<(IEnumerable<Customer>, int)> GetAllCustomers(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, bool isDeleted)
         {
             string searchPhraseLower = string.IsNullOrEmpty(searchPhrase) ? "" : searchPhrase.ToLower();
-            var baseQuery = _dbContext.Customers.Where(r=> searchPhrase == null || (r.Name.ToLower().Contains(searchPhraseLower)));
+            var baseQuery = _dbContext.Customers.Where(r=> searchPhrase == null && r.IsDeleted == isDeleted || (r.Name.ToLower().Contains(searchPhraseLower)) && r.IsDeleted == isDeleted);
             var totalCount = await baseQuery.CountAsync();
 
             if (sortBy != null)
