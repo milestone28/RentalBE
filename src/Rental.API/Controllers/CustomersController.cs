@@ -51,6 +51,7 @@ namespace Rental.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateCustomer([FromRoute] Guid id, UpdateCustomerCommand command)
         {
+           
             command.Id = id;
             await mediator.Send(command);
             return NoContent();
