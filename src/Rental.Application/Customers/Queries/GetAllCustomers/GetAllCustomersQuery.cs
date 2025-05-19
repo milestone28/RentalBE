@@ -1,9 +1,7 @@
-﻿
-
-using MediatR;
+﻿using MediatR;
 using Rental.Application.Common;
 using Rental.Application.Customers.DTOs;
-using Rental.Domain.Constant;
+using Rental.Domain.Constants;
 
 namespace Rental.Application.Customers.Queries.GetAllCustomers
 {

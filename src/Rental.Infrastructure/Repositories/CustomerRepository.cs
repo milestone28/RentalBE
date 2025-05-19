@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Rental.Domain.Constant;
+using Rental.Domain.Constants;
 using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
 using Rental.Infrastructure.Persistence;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Rental.Infrastructure.Repositories
 {
-    internal class CustomerRepository(RentalDBContext _dbContext) : ICustomerRepository
+    internal class CustomerRepository(AppDBContext _dbContext) : ICustomerRepository
     {
         public async Task<(IEnumerable<Customer>, int)> GetAllCustomers(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, bool isDeleted)
         {

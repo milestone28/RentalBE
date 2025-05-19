@@ -10,7 +10,7 @@ using Rental.Infrastructure.Persistence;
 
 namespace Rental.Infrastructure.Migrations
 {
-    [DbContext(typeof(RentalDBContext))]
+    [DbContext(typeof(AppDBContext))]
     partial class RentalDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

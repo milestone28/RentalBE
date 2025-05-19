@@ -11,7 +11,7 @@ using Rental.Infrastructure.Persistence;
 
 namespace Rental.Infrastructure.Migrations
 {
-    [DbContext(typeof(RentalDBContext))]
+    [DbContext(typeof(AppDBContext))]
     [Migration("20250501084305_Initialize")]
     partial class Initialize
     {

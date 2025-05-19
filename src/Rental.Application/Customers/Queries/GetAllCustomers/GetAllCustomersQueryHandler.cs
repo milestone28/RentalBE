@@ -9,7 +9,7 @@ using Rental.Application.Common;
 
 namespace Rental.Application.Customers.Queries.GetAllCustomers
 {
-    public class GetAllCustomersQueryHandlerd(ILogger<GetAllCustomersQueryHandlerd> _logger, IMapper _mapper, ICustomerRepository _customerRepository) 
+    public class GetAllCustomersQueryHandler(ILogger<GetAllCustomersQueryHandler> _logger, IMapper _mapper, ICustomerRepository _customerRepository) 
         : IRequestHandler<GetAllCustomersQuery, PageResult<CustomersDtos>>
     {
         public async Task<PageResult<CustomersDtos>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)

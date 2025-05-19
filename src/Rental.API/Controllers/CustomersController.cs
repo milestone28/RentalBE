@@ -15,7 +15,7 @@ namespace Rental.API.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CustomersController(IMediator mediator) : ControllerBase
     {
         [HttpGet]

@@ -1,12 +1,9 @@
-﻿
-
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Rental.Domain.Entities;
 
 namespace Rental.Infrastructure.Persistence
 {
-    public class RentalDBContext(DbContextOptions<RentalDBContext> options) : IdentityDbContext<User>(options)
+    internal class AppDBContext(DbContextOptions<AppDBContext> options) : DbContext(options)
     {
         internal DbSet<Customer> Customers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Rental.API.Extensions;
@@ -8,7 +9,8 @@ using Rental.Domain.Entities;
 using Rental.Infrastructure.Extensions;
 using Rental.Infrastructure.Seeders;
 using Serilog;
-using System.Reflection;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddAuthentication();
 
+builder.Services.ConfigureJwt(
+              builder.Configuration["JwtValues:secretkey"]!,
+              builder.Configuration["JwtValues:issuer"]!,
+              builder.Configuration["JwtValues:audience"]!
+              );
 
 // If using IIS:
 builder.Services.Configure<IISServerOptions>(options =>
@@ -42,15 +49,6 @@ if (builder.Configuration["HostConfig:Env"] != "PROD")
             }
         });
         c.OperationFilter<AddHeaderOperationFilter>();
-        c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please Insert Token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
 
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
@@ -62,44 +60,27 @@ if (builder.Configuration["HostConfig:Env"] != "PROD")
                                 []
                         }
                     });
-        // add Ba
+
         // add JWT Authentication
-        //var jwtSecurityScheme = new OpenApiSecurityScheme
-        //{
-        //    Reference = new OpenApiReference
-        //    {
-        //        Type = ReferenceType.SecurityScheme,
-        //        Id = JwtBearerDefaults.AuthenticationScheme
-        //    },
-        //    Scheme = "Bearer",
-        //    BearerFormat = "JWT",
-        //    Name = "OAuth 2.0 Authentication",
-        //    In = ParameterLocation.Header,
-        //    Type = SecuritySchemeType.Http,
-        //    Description = "JWT Bearer token"
-        //};
-        //c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-        //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        //            {
-        //                { jwtSecurityScheme, new string[] { }}
-        //            });
-
-        //// add Basic Authentication
-        //var basicSecurityScheme = new OpenApiSecurityScheme
-        //{
-        //    Type = SecuritySchemeType.Http,
-        //    Scheme = "basic",
-        //    Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
-        //};
-        //c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
-        //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        //            {
-        //                { basicSecurityScheme, new string[] { }}
-        //            });
-
-        //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        //c.IncludeXmlComments(xmlPath);
+        var jwtSecurityScheme = new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme
+            },
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            Name = "OAuth 2.0 Authentication",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Description = "JWT Bearer token"
+        };
+        c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        { jwtSecurityScheme, new string[] { }}
+                    });
     });
 
 }
@@ -122,12 +103,28 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
+}
+else
+    app.UseHsts();
+
+if (builder.Configuration["HostConfig:Env"] != "PROD")
+{
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // Enable cors
+    app.UseCors("CorsPolicy");
+}
+else
+{
+    // Enable cors with origin
+    app.UseCors("CorsPolicywithOrigin");
 }
 
 app.UseHttpsRedirection();
-app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
+//app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,8 +1,10 @@
 ﻿
 
+using Rental.Domain.Entities;
+
 namespace Rental.Application.Customers.DTOs
 {
-    public class CustomersDtos
+    public class CustomersDtos : BaseResponse
     {
         public Guid Id { get; set; } = default!;
         public string Name { get; set; } = default!;

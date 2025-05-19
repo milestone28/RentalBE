@@ -1,4 +1,5 @@
-﻿using Rental.Domain.Constant;
+﻿
+using Rental.Domain.Constants;
 using Rental.Domain.Entities;
 
 namespace Rental.Domain.Interfaces
