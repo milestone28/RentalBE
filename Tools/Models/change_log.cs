@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GTETools.Models
+namespace Tools.Models
 {
     public class change_log
     {

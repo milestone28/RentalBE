@@ -1,31 +1,14 @@
-﻿namespace GTETools.Models.Response
+﻿namespace Tools.Models.Response
 {
     public class base_response
     {
-        private int _result_code;
-        private string _result_msg;
+        public string? result_msg { get; set; }
 
-        public string result_msg
-        {
-            get { return _result_msg; }
-            set { _result_msg = value; }
-        }
-
-        public int result_code
-        {
-            get { return _result_code; }
-            set { _result_code = value; }
-        }
+        public int result_code { get; set; }
     }
 
     public class with_req_no : base_response
     {
-        private string _request_num;
-
-        public string request_num
-        {
-            get { return _request_num; }
-            set { _request_num = value; }
-        }
+        public string? request_num { get; set; }
     }
 }

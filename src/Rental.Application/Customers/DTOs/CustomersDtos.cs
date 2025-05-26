@@ -1,6 +1,4 @@
-﻿
-
-using Rental.Domain.Entities;
+﻿using Rental.Domain.Entities.Response;
 
 namespace Rental.Application.Customers.DTOs
 {

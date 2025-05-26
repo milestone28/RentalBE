@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GTETools.Models.Request
+namespace Tools.Models.Request
 {
     public class datetime_request : get_list_base_request
     {

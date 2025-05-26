@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Rental.API.Extensions;
 using Rental.API.Filter;
 using Rental.API.Middlewares;
 using Rental.Application.Extensions;
-using Rental.Domain.Entities;
 using Rental.Infrastructure.Extensions;
 using Rental.Infrastructure.Seeders;
 using Serilog;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,15 +47,15 @@ if (builder.Configuration["HostConfig:Env"] != "PROD")
         c.OperationFilter<AddHeaderOperationFilter>();
 
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                                {
-                                    Reference = new OpenApiReference {  Type = ReferenceType.SecurityScheme, Id = "bearerAuth"}
-                                },
-                                []
-                        }
-                    });
+        {
+            {
+              new OpenApiSecurityScheme
+                 {
+                    Reference = new OpenApiReference {  Type = ReferenceType.SecurityScheme, Id = "bearerAuth"}
+                 },
+                 []
+            }
+        });
 
         // add JWT Authentication
         var jwtSecurityScheme = new OpenApiSecurityScheme
@@ -78,9 +74,21 @@ if (builder.Configuration["HostConfig:Env"] != "PROD")
         };
         c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        { jwtSecurityScheme, new string[] { }}
-                    });
+            {
+               { jwtSecurityScheme, new string[] { }}
+            });
+        // add Basic Authentication
+        var basicSecurityScheme = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "basic",
+            Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
+        };
+        c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+              {
+                 { basicSecurityScheme, new string[] { }}
+              });
     });
 
 }
@@ -92,11 +100,9 @@ else
 
 
 var app = builder.Build();
-
-
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<IDefaultSeeders>();
-await seeder.SeedAsync();
+await seeder.GetAllPendingMigration();
 
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ErrorHandlingMiddleware>();

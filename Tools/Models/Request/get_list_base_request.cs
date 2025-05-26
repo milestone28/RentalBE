@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace GTETools.Models.Request
+namespace Tools.Models.Request
 {
     public class get_list_base_request : get_base_request
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GTETools.Models.Response
+namespace Tools.Models.Response
 {
     public class list_response : base_response
     {

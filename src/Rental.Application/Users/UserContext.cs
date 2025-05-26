@@ -15,21 +15,16 @@ namespace Rental.Application.Users
         public CurrentUser? GetCurrentUser()
         {
             var user = _httpContextAccessor.HttpContext?.User;
-
-            if (user == null)
-            {
-                throw new InvalidOperationException("User context is not present");
-            }
-
-            if (user.Identity == null || !user.Identity.IsAuthenticated)
+            if (user == null || !user.Identity?.IsAuthenticated == true)
             {
                 return null;
             }
 
             var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
+            var user_name = user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
-            return new CurrentUser(userId, email, roles);
+            return new CurrentUser(userId, user_name, email, roles);
         }
     }
 }

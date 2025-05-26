@@ -1,4 +1,4 @@
-﻿namespace GTETools.Models
+﻿namespace Tools.Models
 {
     public class swagger_options
     {

@@ -3,13 +3,16 @@ using Rental.Infrastructure.Persistence;
 
 namespace Rental.Infrastructure.Seeders
 {
-    internal class DefaultSeeders(AppDBContext _dbContext) : IDefaultSeeders
+    internal class DefaultSeeders(AppDBContext _appDbContext, AuthDBContext _authDbContext) : IDefaultSeeders
     {
-        public async Task SeedAsync()
+        public async Task GetAllPendingMigration()
         {
-            if (_dbContext.Database.GetPendingMigrations().Any())
+            IEnumerable<string>[] pendingMigrations = [_appDbContext.Database.GetPendingMigrations(),_authDbContext.Database.GetPendingMigrations()];
+            if (pendingMigrations.Any())
             {
-                await _dbContext.Database.MigrateAsync();
+                // Apply all pending migrations to the database
+                await _authDbContext.Database.MigrateAsync();
+                await _appDbContext.Database.MigrateAsync();
             }
         }
     }

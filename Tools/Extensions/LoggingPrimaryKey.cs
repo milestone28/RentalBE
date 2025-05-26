@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GTETools.Extensions
+namespace Tools.Extensions
 {
     /// <summary>
     /// Add this annotation to the property to tagged the primary key
