@@ -9,7 +9,10 @@ using Rental.Application.Users.Commands.AssignUserRole;
 using Rental.Application.Users.Commands.ChangePasswordUser;
 using Rental.Application.Users.Commands.RegisterUser;
 using Rental.Application.Users.Commands.UnassignUserRole;
+using Rental.Application.Users.DTOs;
 using Rental.Domain.Constants;
+using Rental.Domain.Entities;
+using Rental.Domain.Interfaces;
 using System.Security.Claims;
 using Tools;
 using Tools.Models.Response;
@@ -18,28 +21,29 @@ namespace Rental.API.Controllers
 {
     [Route("api/user")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class UserController(IMediator mediator, IUserContext userContext) : Controller
+    public class UserController(IMediator mediator, IUserContext userContext, IActivityLogRepository _activityLogRepository) : Controller
     {
 
         [HttpPost]
-        //[Authorize(Roles = AuthConstant.Roles.admin + "," + AuthConstant.Roles.owner)]
+        [Authorize(Roles = AuthConstant.Roles.admin + "," + AuthConstant.Roles.owner)]
         [ProducesResponseType(typeof(base_response), 200)]
         public async Task<IActionResult> add_user([FromBody] RegisterUserCommand command)
         {
             result_response result = new result_response();
             base_response response = new base_response();
-
-            System.Net.IPAddress remoteIpAddress1 = HttpContext.Connection.RemoteIpAddress!.MapToIPv4();
+            Activitylogs activitylogs = new Activitylogs();
+            string authuser = "";
+            System.Net.IPAddress remoteIpAddress = HttpContext.Connection.RemoteIpAddress!.MapToIPv4();
             var header = Request.Headers["Authorization"];
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-
             if (header.ToString().StartsWith("Bearer"))
             {
-                var authuser = userContext.GetCurrentUser();
+                var credentialsvalue = header.ToString().Substring("Bearer ".Length).Trim();
+                authuser = userContext.GetCurrentUser()!.Name;
                 result = await mediator.Send(command);
             }
             else
@@ -57,8 +61,31 @@ namespace Rental.API.Controllers
                 result_msg = result.result_msg
             };
 
-            // var result = await mediator.Send(command);
-            //return CreatedAtAction(nameof(RegisterUser), new { id = result.Id }, result);
+            var logdatetime = DateTime.Now;
+            var activityresponse = response.toJSON();
+
+            activitylogs = new Activitylogs()
+            {
+                id = 0,
+                user_id = authuser,
+                activity_datetime = logdatetime,
+                activity_ticktime = logdatetime.Ticks.ToString("x"),
+                ip_address = remoteIpAddress.ToString(),
+                action = "add_user",
+                httpverb = "POST",
+                activity_details = command.toJSON(),
+                activity_response = activityresponse,
+                activity_description = "User: " + authuser + " add new user " + command.username + " " + logdatetime.ToString(),
+                add_details = result.details,
+                update_details = "",
+                delete_details = "",
+                activity_details1 = "",
+                activity_details2 = "",
+                activity_details3 = "",
+                activity_details4 = "",
+            };
+            await _activityLogRepository.LogActivity(activitylogs);
+
             return Ok(response);
         }
 

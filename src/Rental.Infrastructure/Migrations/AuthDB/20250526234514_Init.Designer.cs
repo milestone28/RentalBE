@@ -9,10 +9,10 @@ using Rental.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Rental.Infrastructure.Migrations
+namespace Rental.Infrastructure.Migrations.AuthDB
 {
     [DbContext(typeof(AuthDBContext))]
-    [Migration("20250526072608_Init")]
+    [Migration("20250526234514_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -288,7 +288,7 @@ namespace Rental.Infrastructure.Migrations
                     b.Property<bool>("is_owner")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("is_renter")
+                    b.Property<bool>("is_user")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("last_name")
@@ -323,22 +323,22 @@ namespace Rental.Infrastructure.Migrations
                         {
                             Id = "f7dd87f9-6dce-459d-a981-c8ce5787d938",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "71973826-969f-401f-ad89-c3cbca152624",
+                            ConcurrencyStamp = "c5b82832-c856-4cd8-b834-2193f628f9cf",
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAmqLYj63Ub0YbaiXIq3Ehp+8SF/I9xck9VBSlWWQe/RJr5pNQ5uy163LxEXtXuuFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECjvsdbP7ZnbOVadnh69hn8WKfWQqfyk8chsjepHvJbCVhYq+0SjCaKL1Prc2+aiYQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "785563ce-6b55-420f-a5d7-3db61971e24b",
+                            SecurityStamp = "e1e49574-639b-44b7-a106-c949f280ca93",
                             TwoFactorEnabled = false,
                             UserName = "Admin",
                             first_name = "Admin",
                             is_admin = true,
                             is_deleted = false,
                             is_owner = false,
-                            is_renter = false,
+                            is_user = false,
                             last_name = "Admin",
                             macaddress_lock = false,
                             profile_image_url = "",
@@ -348,22 +348,22 @@ namespace Rental.Infrastructure.Migrations
                         {
                             Id = "289AA786-650A-448B-8D90-5D7F9B97DB9A",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ee61f8f6-5ac4-4b9b-a4e9-fe1cc2b9d175",
+                            ConcurrencyStamp = "1aefa424-ccf8-4a61-bc97-7c98637d646d",
                             Email = "owner@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "OWNER@TEST.COM",
                             NormalizedUserName = "OWNER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJSKczd7wwGRecGgq6oNkn8PQE0rFF8LbJs8zHYzuXolqx+RAph38FtsB4ICm/3J3Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOWUrCPQes6ua2zFcvHzIaqsJVbMe82fWD7ePQvdBeYc3LH84+WCXNsHEg8ZsWBDaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d4c4e40-aa4d-42c6-b5d4-245432f00b6b",
+                            SecurityStamp = "18c5d89d-99ae-4c14-b60d-1fd8c8700f66",
                             TwoFactorEnabled = false,
                             UserName = "Owner",
                             first_name = "Owner",
                             is_admin = false,
                             is_deleted = false,
                             is_owner = true,
-                            is_renter = false,
+                            is_user = false,
                             last_name = "Owner",
                             macaddress_lock = false,
                             profile_image_url = "",

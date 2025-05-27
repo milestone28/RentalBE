@@ -5,6 +5,6 @@ namespace Rental.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<result_response> AddUser(User user_request, string password_request, string user_auth);
+        Task<result_response> AddUser(User user_request, string password_request, string user_auth, string credentials_value);
     }
 }

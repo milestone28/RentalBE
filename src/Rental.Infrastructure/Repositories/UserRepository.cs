@@ -1,40 +1,112 @@
 ﻿
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Rental.Application.Users;
 using Rental.Domain.Constants;
 using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
+using Rental.Infrastructure.Persistence;
 using System.Text.Json;
 using Tools;
 using Tools.Models.Response;
 
 namespace Rental.Infrastructure.Repositories
 {
-    internal class UserRepository(UserManager<User> userManager, ILogger<UserRepository> _logger) : IUserRepository
+    internal class UserRepository(ILogger<UserRepository> _logger, UserManager<User> _userManager, AuthDBContext _authDBContext) : IUserRepository
     {
-        public async Task<result_response> AddUser(User user_request, string password_request, string user_auth)
+        public async Task<result_response> AddUser(User user_request, string password_request, string user_auth, string credentials_value)
         {
             result_response result = new result_response();
-
+            User _new_user = new User();
+            string userDetails = "";
+            DateTime datetimenow = DateTime.Now;
             try
             {
-                // check duplicate UserID
-                //var search_user = await _userManager.FindByEmailAsync(user_request.Email!);
-                //if(search_user != null)
-                //{
-                //    result = CreateResponse<result_response>(1, (int)ReturnCode.Error, ReturnMessage.UserIdExist);
-                //    return result;
-                //}
+                var checkToken = _authDBContext.SetupJWTs.AsNoTracking().FirstOrDefault(x => x.user_id == user_auth && x.user_token == credentials_value);
+                if(checkToken == null)
+                {
+                    result = CreateResponse<result_response>(1, (int)ReturnCode.Token, ReturnMessage.Authorization);
+                    return result;
+                }
 
-                var identityResult = await userManager.CreateAsync(user_request, password_request);
+                // validate UserID
+                if (!Helper.isAlphaNumeric(user_request.UserName!))
+                {
+                    result = CreateResponse<result_response>(1, (int)ReturnCode.Error, ReturnMessage.InvalidUserIdSpecialCharacter);
+                    return result;
+                }
+
+                // check Access Right is correct
+                if ((user_request.is_user) && !user_request.is_owner && !user_request.is_user)
+                {
+                    result = CreateResponse<result_response>(1, (int)ReturnCode.Error, ReturnMessage.AccessRights);
+                    return result;
+                }
+               
+
+                //override rights
+                if(user_auth == AuthConstant.Roles.admin)
+                {
+                    user_request.is_admin = false;
+                    user_request.is_owner = true;
+                    user_request.is_user = false;
+                }
+                else if (user_request.is_owner)
+                {
+                    user_request.is_admin = false;
+                    user_request.is_owner = false;
+                    user_request.is_user = true;
+                }
+                else if (user_request.is_user)
+                {
+                    user_request.is_admin = false;
+                    user_request.is_owner = false;
+                    user_request.is_user = false;
+                }
+
+                _new_user = new User()
+                {
+                    UserName = user_request.UserName,
+                    Email = user_request.Email,
+                    first_name = user_request.first_name,
+                    last_name = user_request.last_name,
+                    profile_image_url = user_request.profile_image_url,
+                    is_admin = user_request.is_admin,
+                    is_owner = user_request.is_owner,
+                    is_user = user_request.is_user,
+                    status = user_request.status,
+                    PhoneNumber = user_request.PhoneNumber,
+                    date_of_birth = user_request.date_of_birth,
+                    last_online = datetimenow,
+                    address = user_request.address,
+                    macaddress_lock = false,
+                    is_deleted = false,
+                    base_model = new BaseModel()
+                    {
+                        created_by = user_auth,
+                        created_date = datetimenow,
+                        updated_by = user_auth,
+                        updated_date = datetimenow,
+                        extra1 = "",
+                        extra2 = "",
+                        extra3 = "",
+                        extra4 = "",
+                        notes1 = "",
+                        notes2 = "",
+                        notes3 = "",
+                        notes4 = "",
+                    }
+                };
+
+                var identityResult = await _userManager.CreateAsync(_new_user, password_request);
                 if (!identityResult.Succeeded)
                 {
                     // Check for duplicate user error
-                    if (identityResult.Errors.Any(e => e.Description.Contains("duplicate")))
+                    if (identityResult.Errors.Any(e => e.Code.Contains("duplicate", StringComparison.OrdinalIgnoreCase)))
                     {
-                        result = CreateResponse<result_response>(1, (int)ReturnCode.Error, ReturnMessage.UserIdExist);
+                        result = CreateResponse<result_response>(1, (int)ReturnCode.Error, identityResult.Errors.FirstOrDefault()!.Description.ToString()!);
+                        return result;
                     }
                     else
                     {
@@ -42,21 +114,22 @@ namespace Rental.Infrastructure.Repositories
                         var errorMessages = identityResult.Errors.Select(e => e.Description).ToList();
                         string jsonResult = JsonSerializer.Serialize(errorMessages);
                         result = CreateResponse<result_response>(1, (int)ReturnCode.Error, jsonResult);
+                        return result;
                     }
                 }
 
                 switch (user_auth)
-                {
-                    case AuthConstant.Roles.admin:
-                        identityResult = await userManager.AddToRoleAsync(user_request, AuthConstant.Roles.owner);
-                        break;
-                    case AuthConstant.Roles.owner:
-                        identityResult = await userManager.AddToRoleAsync(user_request, AuthConstant.Roles.renter);
-                        break;
-                    default:
-                        identityResult = await userManager.AddToRoleAsync(user_request, AuthConstant.Roles.renter);
-                        break;
-                }
+                    {
+                        case AuthConstant.Roles.admin:
+                            identityResult = await _userManager.AddToRoleAsync(user_request, AuthConstant.Roles.owner);
+                            break;
+                        case AuthConstant.Roles.owner:
+                            identityResult = await _userManager.AddToRoleAsync(user_request, AuthConstant.Roles.user);
+                            break;
+                        default:
+                            identityResult = await _userManager.AddToRoleAsync(user_request, AuthConstant.Roles.user);
+                            break;
+                    }
 
                 result = CreateResponse<result_response>(1, (int)ReturnCode.Success, ReturnMessage.Created, user_request.Id);
             }
@@ -110,10 +183,10 @@ namespace Rental.Infrastructure.Repositories
         {
             if (disposing)
             {
-                if (userManager != null)
+                if (_userManager != null)
                 {
-                    userManager.Dispose();
-                    userManager = null;
+                    _userManager.Dispose();
+                    _userManager = null!;
                 }
             }
         }

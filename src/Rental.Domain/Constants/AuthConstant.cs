@@ -8,7 +8,7 @@ namespace Rental.Domain.Constants
         {
             public const string admin = "Admin";
             public const string owner = "Owner";
-            public const string renter = "Renter";
+            public const string user = "Renter";
             public const string adminId = "8fe14426-55e9-4f04-b0f3-6e4791487f9c";
             public const string ownerId = "f8c36cca-99ad-4735-a180-dfab14d5415a";
             public const string renterId = "AC605A17-69D6-4A45-BC42-30D6DE7CE0B2";

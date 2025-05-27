@@ -9,10 +9,10 @@ using Rental.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Rental.Infrastructure.Migrations.AppDB
+namespace Rental.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250526072614_Init")]
+    [Migration("20250526234504_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -91,8 +91,7 @@ namespace Rental.Infrastructure.Migrations.AppDB
 
                     b.Property<string>("user_id")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("id");
 

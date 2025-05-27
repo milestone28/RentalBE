@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Rental.Infrastructure.Migrations
+namespace Rental.Infrastructure.Migrations.AuthDB
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -83,7 +83,7 @@ namespace Rental.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     is_admin = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     is_owner = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    is_renter = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    is_user = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -272,11 +272,11 @@ namespace Rental.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "date_of_birth", "first_name", "is_admin", "is_deleted", "is_owner", "is_renter", "last_name", "last_online", "macaddress_lock", "profile_image_url", "status" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "date_of_birth", "first_name", "is_admin", "is_deleted", "is_owner", "is_user", "last_name", "last_online", "macaddress_lock", "profile_image_url", "status" },
                 values: new object[,]
                 {
-                    { "289AA786-650A-448B-8D90-5D7F9B97DB9A", 0, "ee61f8f6-5ac4-4b9b-a4e9-fe1cc2b9d175", "owner@test.com", false, false, null, "OWNER@TEST.COM", "OWNER", "AQAAAAIAAYagAAAAEJSKczd7wwGRecGgq6oNkn8PQE0rFF8LbJs8zHYzuXolqx+RAph38FtsB4ICm/3J3Q==", null, false, "0d4c4e40-aa4d-42c6-b5d4-245432f00b6b", false, "Owner", null, "Owner", false, false, true, false, "Owner", null, false, "", true },
-                    { "f7dd87f9-6dce-459d-a981-c8ce5787d938", 0, "71973826-969f-401f-ad89-c3cbca152624", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN", "AQAAAAIAAYagAAAAEAmqLYj63Ub0YbaiXIq3Ehp+8SF/I9xck9VBSlWWQe/RJr5pNQ5uy163LxEXtXuuFw==", null, false, "785563ce-6b55-420f-a5d7-3db61971e24b", false, "Admin", null, "Admin", true, false, false, false, "Admin", null, false, "", true }
+                    { "289AA786-650A-448B-8D90-5D7F9B97DB9A", 0, "1aefa424-ccf8-4a61-bc97-7c98637d646d", "owner@test.com", false, false, null, "OWNER@TEST.COM", "OWNER", "AQAAAAIAAYagAAAAEOWUrCPQes6ua2zFcvHzIaqsJVbMe82fWD7ePQvdBeYc3LH84+WCXNsHEg8ZsWBDaA==", null, false, "18c5d89d-99ae-4c14-b60d-1fd8c8700f66", false, "Owner", null, "Owner", false, false, true, false, "Owner", null, false, "", true },
+                    { "f7dd87f9-6dce-459d-a981-c8ce5787d938", 0, "c5b82832-c856-4cd8-b834-2193f628f9cf", "admin@test.com", false, false, null, "ADMIN@TEST.COM", "ADMIN", "AQAAAAIAAYagAAAAECjvsdbP7ZnbOVadnh69hn8WKfWQqfyk8chsjepHvJbCVhYq+0SjCaKL1Prc2+aiYQ==", null, false, "e1e49574-639b-44b7-a106-c949f280ca93", false, "Admin", null, "Admin", true, false, false, false, "Admin", null, false, "", true }
                 });
 
             migrationBuilder.InsertData(

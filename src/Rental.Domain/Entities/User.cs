@@ -18,6 +18,6 @@ namespace Rental.Domain.Entities
         public BaseModel? base_model { get; set; }
         public bool is_admin { get; set; }
         public bool is_owner { get; set; }
-        public bool is_renter { get; set; }
+        public bool is_user { get; set; }
     }
 }

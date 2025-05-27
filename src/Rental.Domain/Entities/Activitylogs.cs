@@ -10,8 +10,6 @@ namespace Rental.Domain.Entities
         [LoggingPrimaryKey]
         public int id { get;  set; } = default!;
        
-        [Required]
-        [MaxLength(50)]
         public string user_id { get; set; } = default!;
         [Required]
         public DateTime activity_datetime { get; set; } = default!;

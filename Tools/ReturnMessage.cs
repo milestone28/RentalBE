@@ -87,6 +87,7 @@ namespace Tools
         public static string InvalidProcessType = "Invalid process type.";
         public static string InvalidBillingTrxnNo = "Invalid billing trxn number.";
         public static string InvalidTermID = "Invalid term ID.";
+        public static string InvalidUserIdSpecialCharacter = "Invalid UserID should not contain special characters.";
 
         // 001 Exist
         public static string UserIdExist = "UserID already exist.";

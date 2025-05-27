@@ -11,12 +11,12 @@ namespace Rental.Application.Users.Commands.UpdateUserDetails
         public async Task Handle(UpdateUserDetailsCommand request, CancellationToken cancellationToken)
         {
             var user = _userContext.GetCurrentUser();
-            _logger.LogInformation("Updating user: {UserId}, with {@Request}", user!.Id, request);
-            var dbUser = _userStore.FindByIdAsync(user!.Id, cancellationToken).Result;
+            _logger.LogInformation("Updating user: {UserId}, with {@Request}", user!.Name, request);
+            var dbUser = _userStore.FindByNameAsync(user!.Name, cancellationToken).Result;
 
             if(dbUser == null)
             {
-                throw new NotFoundException(nameof(User), user!.Id);
+                throw new NotFoundException(nameof(User), user!.Name);
             }
             await _userStore.UpdateAsync(dbUser, cancellationToken); 
         }

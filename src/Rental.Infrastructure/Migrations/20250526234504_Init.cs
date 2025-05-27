@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Rental.Infrastructure.Migrations.AppDB
+namespace Rental.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -21,7 +21,7 @@ namespace Rental.Infrastructure.Migrations.AppDB
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    user_id = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    user_id = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     activity_datetime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     activity_ticktime = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)

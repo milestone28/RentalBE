@@ -1,6 +1,8 @@
 ﻿
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Rental.Domain.Entities;
 using System.Security.Claims;
 
 namespace Rental.Application.Users
@@ -14,17 +16,15 @@ namespace Rental.Application.Users
     {
         public CurrentUser? GetCurrentUser()
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-            if (user == null || !user.Identity?.IsAuthenticated == true)
+            var identity = _httpContextAccessor.HttpContext?.User.Identity as ClaimsIdentity;
+            if (identity == null)
             {
                 return null;
             }
 
-            var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
-            var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
-            var user_name = user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
-            var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
-            return new CurrentUser(userId, user_name, email, roles);
+            var user_name = identity.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
+            //var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role)!.Select(c => c.Value);
+            return new CurrentUser(user_name);
         }
     }
 }

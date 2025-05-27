@@ -16,7 +16,7 @@ namespace Rental.Application.Users.Commands.ChangePasswordUser
         {
             _logger.LogInformation("Changing password for user: {@Request}", request);
             var curentUser = _userContext.GetCurrentUser();
-            var user = await _userManager.FindByEmailAsync(curentUser.Email) ?? throw new NotFoundException(nameof(User), curentUser.Email);
+            var user = await _userManager.FindByNameAsync(curentUser.Name) ?? throw new NotFoundException(nameof(User), curentUser.Name);
             var test =  await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
             if (!test.Succeeded)
             {

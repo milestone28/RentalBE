@@ -8,7 +8,7 @@ using Rental.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Rental.Infrastructure.Migrations.AppDB
+namespace Rental.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     partial class AppDBContextModelSnapshot : ModelSnapshot
@@ -88,8 +88,7 @@ namespace Rental.Infrastructure.Migrations.AppDB
 
                     b.Property<string>("user_id")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("id");
 

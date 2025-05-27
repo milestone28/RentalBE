@@ -37,8 +37,8 @@ namespace Rental.Infrastructure.Persistence
                  new IdentityRole
                 {
                     Id = AuthConstant.Roles.renterId,
-                    Name = AuthConstant.Roles.renter,
-                    NormalizedName = AuthConstant.Roles.renter.ToUpper(),
+                    Name = AuthConstant.Roles.user,
+                    NormalizedName = AuthConstant.Roles.user.ToUpper(),
                     ConcurrencyStamp = AuthConstant.Roles.renterId
                 }
             };

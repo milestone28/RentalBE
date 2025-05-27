@@ -11,7 +11,7 @@ namespace Rental.Domain.Response
 
     public class login_user_details
     {
-        public string user_id { get; set; } = default!;
+        public string? user_id { get; set; }
         public string token { get; set; } = default!;
         public DateTime? expire_in { get; set; }
         public string device_id { get; set; } = default!;

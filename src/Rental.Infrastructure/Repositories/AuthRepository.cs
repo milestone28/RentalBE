@@ -17,7 +17,7 @@ using static Rental.Domain.Constants.AuthConstant;
 
 namespace Rental.Infrastructure.Repositories
 {
-    internal class AuthRepository(AuthDBContext _dBContext ,UserManager<User> userManager, IConfiguration configuration) : IAuthRepository
+    internal class AuthRepository(AuthDBContext _dBContext ,UserManager<User> _userManager, IConfiguration configuration) : IAuthRepository
     {
         public async Task<login_user_response> Login(string username, string password, string userAgent)
         {
@@ -25,14 +25,14 @@ namespace Rental.Infrastructure.Repositories
 
             try
             {
-                var identityUser = await userManager.FindByNameAsync(username);
+                var identityUser = await _userManager.FindByNameAsync(username);
                 if (identityUser == null)
                 {
                     result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.InvalidUserId);
                     return result;
                 }
 
-                var checkPassword = await userManager.CheckPasswordAsync(identityUser, password);
+                var checkPassword = await _userManager.CheckPasswordAsync(identityUser, password);
                 if(!checkPassword)
                 {
                     result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.InvalidAuthHeader);
@@ -69,7 +69,7 @@ namespace Rental.Infrastructure.Repositories
                 {
                     claimsdata = new[] {
                         new Claim(ClaimTypes.Name, identityUser.UserName!),
-                        new Claim(ClaimTypes.Role, Roles.renter),
+                        new Claim(ClaimTypes.Role, Roles.user),
                         new Claim("Device", userAgent)
                     };
                 }
@@ -166,10 +166,10 @@ namespace Rental.Infrastructure.Repositories
         {
             if (disposing)
             {
-                if (userManager != null)
+                if (_userManager != null)
                 {
-                    userManager.Dispose();
-                    userManager = null!;
+                    _userManager.Dispose();
+                    _userManager = null!;
                 }
             }
         }

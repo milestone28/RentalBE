@@ -11,7 +11,7 @@ using Tools;
 
 namespace Rental.API.Controllers
 {
-    [Route("api/user")]
+    [Route("api/auth")]
     [ApiController]
     [Produces("application/json")]
     public class AuthController(IMediator mediatR, IActivityLogRepository _activityLogRepository) : Controller
@@ -56,8 +56,9 @@ namespace Rental.API.Controllers
             }
 
             var logdatetime = DateTime.Now;
-            var activityresponse = response.toJSON();
             string tokenString = response.details.token;
+            var activityresponse = response.toJSON();
+            response.details.token = tokenString;
             activitylogs = new Activitylogs()
             {
                 id = 0,
@@ -69,7 +70,7 @@ namespace Rental.API.Controllers
                 httpverb = "POST",
                 activity_details = "",
                 activity_response = activityresponse,
-                activity_description = "User: " + response.details.user_id + " logged in @" + logdatetime.ToString(),
+                activity_description = "User: " + response.details.user_id + " logged in " + logdatetime.ToString(),
                 add_details = "",
                 update_details = "",
                 delete_details = "",
@@ -81,5 +82,8 @@ namespace Rental.API.Controllers
             await _activityLogRepository.LogActivity(activitylogs);
             return Ok(response);
         }
+   
+    
+    
     }
 }
