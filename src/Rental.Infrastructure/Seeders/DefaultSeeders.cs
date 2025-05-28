@@ -3,7 +3,7 @@ using Rental.Infrastructure.Persistence;
 
 namespace Rental.Infrastructure.Seeders
 {
-    internal class DefaultSeeders(AppDBContext _appDbContext, AuthDBContext _authDbContext) : IDefaultSeeders
+    internal class DefaultSeeders(AppDBContext _appDbContext, IHttpContextAccessor _httpContextAccessor) : IDefaultSeeders
     {
         public async Task GetAllPendingMigration()
         {
