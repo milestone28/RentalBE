@@ -179,6 +179,13 @@ namespace Rental.Infrastructure.Repositories
 
                 if (_User.is_admin)
                 {
+                    if (request.search != null)
+                    if (request.search.ToLower() == AuthConstant.defaultAdmin.user_id.ToLower())
+                    {
+                        result = CreateResponse<users_response>(2, (int)ReturnCode.Error, ReturnMessage.InvalidUserId);
+                        return result;
+                    }
+
                     var baseQuery = _dbcontext.users_.Where(r => request.search == null || r.id == guid_id || (r.email!.ToLower().Contains(request.search) || r.id == Guid.Parse(request.search) || (r.user_id!.ToLower().Contains(request.search))));
                     var fetchrecords_count = await baseQuery.CountAsync();
                     if (request.sort_by != null)
