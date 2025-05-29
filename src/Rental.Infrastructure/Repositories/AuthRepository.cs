@@ -1,12 +1,10 @@
 ﻿
-
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Rental.Domain.Response;
 using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
+using Rental.Domain.Response;
 using Rental.Infrastructure.Persistence;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,23 +15,23 @@ using static Rental.Domain.Constants.AuthConstant;
 
 namespace Rental.Infrastructure.Repositories
 {
-    internal class AuthRepository(AuthDBContext _dBContext ,UserManager<User> _userManager, IConfiguration configuration) : IAuthRepository
+    internal class AuthRepository(AppDBContext _dbcontext, IConfiguration configuration) : IAuthRepository
     {
-        public async Task<login_user_response> Login(string username, string password, string userAgent)
+        public async Task<login_user_response> Login(string user_id, string password, string userAgent, string remoteipaddress_)
         {
             login_user_response result = new login_user_response();
-
+            DateTime dateTimenow = DateTime.Now.ToLocalTime();
             try
             {
-                var identityUser = await _userManager.FindByNameAsync(username);
+                var identityUser = await _dbcontext.users_.Where(x => x.user_id == user_id).AsNoTracking().FirstOrDefaultAsync();
                 if (identityUser == null)
                 {
                     result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.InvalidUserId);
                     return result;
                 }
-
-                var checkPassword = await _userManager.CheckPasswordAsync(identityUser, password);
-                if(!checkPassword)
+                string encryptpass = Hasher.GetPasswordHash(identityUser.salt, password);
+                var checkPassword = await _dbcontext.users_.Where(x => x.user_id == user_id && x.password == encryptpass).AsNoTracking().FirstOrDefaultAsync();
+                if(checkPassword == null)
                 {
                     result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.InvalidAuthHeader);
                     return result;
@@ -45,6 +43,17 @@ namespace Rental.Infrastructure.Repositories
                     result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.UserDeactivated);
                     return result;
                 }
+                // check if IP Lock
+                if (identityUser.ip_lock)
+                {
+                    var user_ip = await _dbcontext.users_ip_.Where(x => x.user_id == user_id && x.user_ip == remoteipaddress_).FirstOrDefaultAsync();
+                    if (user_ip == null)
+                    {
+                        result = CreateResponse<login_user_response>(1, (int)ReturnCode.Error, ReturnMessage.DeniedIPLock);
+                        return result;
+                    }
+                }
+             
 
                 // add claim role here
                 Claim[] claimsdata = new Claim[] { };
@@ -52,7 +61,7 @@ namespace Rental.Infrastructure.Repositories
                 if (identityUser.is_admin)
                 {
                     claimsdata = new[] {
-                        new Claim(ClaimTypes.Name, identityUser.UserName!),
+                        new Claim(ClaimTypes.Name, identityUser.user_id),
                         new Claim(ClaimTypes.Role, Roles.admin),
                         new Claim("Device", userAgent)
                     };
@@ -60,7 +69,7 @@ namespace Rental.Infrastructure.Repositories
                 else if (identityUser.is_owner)
                 {
                     claimsdata = new[] {
-                        new Claim(ClaimTypes.Name, identityUser.UserName!),
+                        new Claim(ClaimTypes.Name, identityUser.user_id),
                         new Claim(ClaimTypes.Role, Roles.owner),
                         new Claim("Device", userAgent)
                     };
@@ -68,7 +77,7 @@ namespace Rental.Infrastructure.Repositories
                 else
                 {
                     claimsdata = new[] {
-                        new Claim(ClaimTypes.Name, identityUser.UserName!),
+                        new Claim(ClaimTypes.Name, identityUser.user_id),
                         new Claim(ClaimTypes.Role, Roles.user),
                         new Claim("Device", userAgent)
                     };
@@ -85,32 +94,32 @@ namespace Rental.Infrastructure.Repositories
                    );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-                var mjwt = await _dBContext.SetupJWTs.FirstOrDefaultAsync(x => x.user_id == identityUser.UserName && x.device_id == userAgent);
-                if(mjwt == null)
+                var user_jwt = await _dbcontext.users_jwt_.FirstOrDefaultAsync(x => x.user_id == identityUser.user_id && x.device_id == userAgent);
+                if(user_jwt == null)
                 {
-                    mjwt = new SetupJWT()
+                    user_jwt = new SetupJWT()
                     {
-                        user_id = identityUser.UserName!,
+                        user_id = identityUser.user_id,
                         device_id = userAgent,
                         user_token = tokenString,
                         expire_in = token.ValidTo
                     };
-                    await _dBContext.SetupJWTs.AddAsync(mjwt);
+                    await _dbcontext.users_jwt_.AddAsync(user_jwt);
                 }
                 else
                 {
-                    mjwt.user_token = tokenString;
-                    mjwt.expire_in = token.ValidTo;
-                    _dBContext.SetupJWTs.Update(mjwt);
+                    user_jwt.user_token = tokenString;
+                    user_jwt.expire_in = token.ValidTo;
+                    _dbcontext.users_jwt_.Update(user_jwt);
                 }
-                await _dBContext.SaveChangesAsync();
+                await _dbcontext.SaveChangesAsync();
                 result = new login_user_response()
                 {
                     result_code = (int)ReturnCode.Success,
                     result_msg = ReturnMessage.Login,
                     details = new login_user_details()
                     {
-                        user_id = identityUser.UserName!,
+                        user_id = identityUser.user_id,
                         token = tokenString,
                         expire_in = token.ValidTo,
                         device_id = userAgent,
@@ -166,10 +175,10 @@ namespace Rental.Infrastructure.Repositories
         {
             if (disposing)
             {
-                if (_userManager != null)
+                if (_dbcontext != null)
                 {
-                    _userManager.Dispose();
-                    _userManager = null!;
+                    _dbcontext.Dispose();
+                    _dbcontext = null!;
                 }
             }
         }

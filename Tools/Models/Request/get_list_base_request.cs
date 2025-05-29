@@ -1,18 +1,27 @@
-﻿using System;
+﻿
 using System.ComponentModel.DataAnnotations;
+using static Tools.Models.sort_direction;
+
 
 namespace Tools.Models.Request
 {
     public class get_list_base_request : get_base_request
     {
-        private string _search;
-
+        private string? _search;
+        private string? _sort_by;
         [MaxLength(255)]
         public string search
         {
             get { return _search; }
             set { _search = value; }
         }
+        [MaxLength(255)]
+        public string sort_by
+        {
+            get { return _sort_by; }
+            set { _sort_by = value; }
+        }
+        public SortDirection sort_direction { get; set; }
     }
 
     public class get_base_request

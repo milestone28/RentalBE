@@ -102,7 +102,7 @@ else
 var app = builder.Build();
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<IDefaultSeeders>();
-await seeder.GetAllPendingMigration();
+await seeder.GetSeed();
 
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ErrorHandlingMiddleware>();

@@ -1,8 +1,9 @@
 ﻿using Rental.Domain.Entities.Response;
+using Tools.Models.Response;
 
 namespace Rental.Application.Customers.DTOs
 {
-    public class CustomersDtos : BaseResponse
+    public class CustomersDtos : base_response
     {
         public Guid Id { get; set; } = default!;
         public string Name { get; set; } = default!;

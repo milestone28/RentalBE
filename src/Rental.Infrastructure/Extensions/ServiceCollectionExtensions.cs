@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
-using Rental.Infrastructure.Configuration;
 using Rental.Infrastructure.Persistence;
 using Rental.Infrastructure.Repositories;
 using Rental.Infrastructure.Seeders;
@@ -27,19 +25,18 @@ namespace Rental.Infrastructure.Extensions
 
             //using mysql
             services.AddDbContext<AppDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).EnableSensitiveDataLogging());
-            services.AddDbContext<AuthDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)).EnableSensitiveDataLogging());
-            services.AddIdentityCore<User>().AddRoles<IdentityRole>().AddTokenProvider<DataProtectorTokenProvider<User>>("Rental").AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
-            services.Configure<IdentityOptions>(options =>
-             {
-                 options.User.RequireUniqueEmail = true;
-                 options.Password.RequireDigit = true;
-                 options.Password.RequiredLength = 6;
-                 options.Password.RequireNonAlphanumeric = true;
-                 options.Password.RequireLowercase = true;
-                 options.Password.RequireUppercase = true;
-                 options.Password.RequiredUniqueChars = 1;
-             });
-            services.Configure<BlobStorageSettings>(configuration.GetSection("BlobStorage"));
+            //services.AddIdentityCore<User>().AddRoles<IdentityRole>().AddTokenProvider<DataProtectorTokenProvider<User>>("Rental").AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
+            //services.Configure<IdentityOptions>(options =>
+            // {
+            //     options.User.RequireUniqueEmail = true;
+            //     options.Password.RequireDigit = true;
+            //     options.Password.RequiredLength = 6;
+            //     options.Password.RequireNonAlphanumeric = true;
+            //     options.Password.RequireLowercase = true;
+            //     options.Password.RequireUppercase = true;
+            //     options.Password.RequiredUniqueChars = 1;
+            // });
+            //services.Configure<BlobStorageSettings>(configuration.GetSection("BlobStorage"));
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IDefaultSeeders, DefaultSeeders>();
             services.AddScoped<IBlobStorageService, BlobStorageService>();

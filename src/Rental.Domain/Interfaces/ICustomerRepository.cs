@@ -1,6 +1,6 @@
 ﻿
-using Rental.Domain.Constants;
 using Rental.Domain.Entities;
+using static Tools.Models.sort_direction;
 
 namespace Rental.Domain.Interfaces
 {

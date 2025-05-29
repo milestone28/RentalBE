@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Rental.Application.Common;
 using Rental.Application.Customers.DTOs;
-using Rental.Domain.Constants;
+using Tools.Models.Request;
+using static Tools.Models.sort_direction;
 
 namespace Rental.Application.Customers.Queries.GetAllCustomers
 {
-    public class GetAllCustomersQuery : IRequest<PageResult<CustomersDtos>>
+    public class GetAllCustomersQuery : IRequest<get_list_base_requestV2<CustomersDtos>>
     {
         public string? searchPhrase { get; set; }
         public string? SortBy { get; set; }

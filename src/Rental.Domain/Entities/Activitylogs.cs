@@ -1,8 +1,10 @@
 ﻿using Tools.Extensions;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Rental.Domain.Entities
 {
+    [Table("activitylogs")]
     public class Activitylogs
     {
         [Key]
@@ -10,7 +12,7 @@ namespace Rental.Domain.Entities
         [LoggingPrimaryKey]
         public int id { get;  set; } = default!;
        
-        public string user_id { get; set; } = default!;
+        public string? user_id { get; set; }
         [Required]
         public DateTime activity_datetime { get; set; } = default!;
         [Required]

@@ -3,7 +3,6 @@
     public class base_response
     {
         public string? result_msg { get; set; }
-
         public int result_code { get; set; }
     }
 

@@ -1,11 +1,10 @@
 ﻿
 
-using Tools.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Rental.Domain.Entities
 {
-    public class BaseModel : ICloneable
+    public class base_model : ICloneable
     {
         [MaxLength(255)]
         public string? extra1 { get; set; }
@@ -32,7 +31,6 @@ namespace Rental.Domain.Entities
         [Required]
         [MaxLength(255)]
         public string? updated_by { get; set; }
-
         public object Clone()
         {
             return this.MemberwiseClone();

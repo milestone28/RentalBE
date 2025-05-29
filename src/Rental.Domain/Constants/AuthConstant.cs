@@ -16,9 +16,9 @@ namespace Rental.Domain.Constants
 
         public class defaultAdmin
         {
-            public const string adminEmail = "admin@test.com";
-            public const string adminPassword = "P@ssw0rd";
-            public const string adminId = "f7dd87f9-6dce-459d-a981-c8ce5787d938";
+            public const string user_id = "admin";
+            public const string email = "admin@test.com";
+            public const string password = "P@ssw0rd";
         }
 
         public class defaultOwner

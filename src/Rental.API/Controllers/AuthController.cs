@@ -1,5 +1,4 @@
-﻿using Azure;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rental.Application.Auth.Command.Login;
@@ -62,7 +61,7 @@ namespace Rental.API.Controllers
             activitylogs = new Activitylogs()
             {
                 id = 0,
-                user_id = response.details.user_id,
+                user_id = response.details.user_id!,
                 activity_datetime = logdatetime,
                 activity_ticktime = logdatetime.Ticks.ToString("x"),
                 ip_address = remoteIpAddress.ToString(),

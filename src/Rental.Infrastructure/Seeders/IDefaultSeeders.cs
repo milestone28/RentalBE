@@ -2,6 +2,6 @@
 {
     public interface IDefaultSeeders
     {
-        Task GetAllPendingMigration();
+        Task GetSeed();
     }
 }

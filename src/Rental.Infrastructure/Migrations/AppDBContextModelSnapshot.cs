@@ -87,12 +87,11 @@ namespace Rental.Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("user_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("id");
 
-                    b.ToTable("Activitylogs");
+                    b.ToTable("activitylogs");
                 });
 
             modelBuilder.Entity("Rental.Domain.Entities.Customer", b =>
@@ -133,6 +132,216 @@ namespace Rental.Infrastructure.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Rental.Domain.Entities.SetupJWT", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("device_id")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("expire_in")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("user_token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable("setup_jwt");
+                });
+
+            modelBuilder.Entity("Rental.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("created_by")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("created_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateOnly?>("date_of_birth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("extra1")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra2")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra3")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra4")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("first_name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("ip_lock")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("is_admin")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("is_owner")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("is_user")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("last_name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("last_online")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("middle_name")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("mobile")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("notes1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes3")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes4")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("salt")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("updated_by")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("updated_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("setup_users");
+                });
+
+            modelBuilder.Entity("Rental.Domain.Entities.User_IP", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("id"));
+
+                    b.Property<string>("created_by")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("created_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("extra1")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra2")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra3")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("extra4")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("notes1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes2")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes3")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("notes4")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("updated_by")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("updated_date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("user_ip")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("setup_authorizeip");
+                });
+
             modelBuilder.Entity("Rental.Domain.Entities.Customer", b =>
                 {
                     b.OwnsOne("Rental.Domain.Entities.Address", "Address", b1 =>
@@ -158,6 +367,33 @@ namespace Rental.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Rental.Domain.Entities.User", b =>
+                {
+                    b.OwnsOne("Rental.Domain.Entities.Address", "address", b1 =>
+                        {
+                            b1.Property<Guid>("Userid")
+                                .HasColumnType("char(36)");
+
+                            b1.Property<string>("city")
+                                .HasColumnType("longtext");
+
+                            b1.Property<string>("postal_code")
+                                .HasColumnType("longtext");
+
+                            b1.Property<string>("street")
+                                .HasColumnType("longtext");
+
+                            b1.HasKey("Userid");
+
+                            b1.ToTable("setup_users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("Userid");
+                        });
+
+                    b.Navigation("address");
                 });
 #pragma warning restore 612, 618
         }

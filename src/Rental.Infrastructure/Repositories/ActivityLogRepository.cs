@@ -15,7 +15,7 @@ namespace Rental.Infrastructure.Repositories
             bool result = false;
             try
             {
-                await _dbContext.Activitylogs.AddAsync(logs);
+                await _dbContext.activitiy_logs_.AddAsync(logs);
                 await _dbContext.SaveChangesAsync();
                 result = true;
             }

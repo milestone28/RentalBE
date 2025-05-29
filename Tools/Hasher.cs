@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Newtonsoft.Json.Linq;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,6 +17,38 @@ namespace Tools
         #endregion
 
         #region "public methods"
+
+        public static bool VerifyPassword(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            using (var hmac = new HMACSHA512(storedSalt))
+            {
+                byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedHash[i])
+                        return false; // Passwords do not match
+                }
+            }
+            return true; // Passwords match
+        }
+
+        public static string GetPasswordHash(string passwordSalt, string password)
+        {
+           // string passwordSaltPlusString =
+                 //_config.GetSection("AppSettings:PasswordKey").Value
+                 //Convert.ToBase64String(passwordSalt);
+
+            byte[] passwordHash = KeyDerivation.Pbkdf2(
+                password: password,
+                salt: Encoding.ASCII.GetBytes(passwordSalt),
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8
+            );
+
+            return Convert.ToBase64String(passwordHash);
+        }
+
         public static string createMd5(string salt, string tohash)
         {
             string hash = "";
@@ -147,9 +181,10 @@ namespace Tools
         private static byte[] GetSalt(int maximumSaltLength)
         {
             var salt = new byte[maximumSaltLength];
-            using (var random = new RNGCryptoServiceProvider())
+
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                random.GetNonZeroBytes(salt);
+                rng.GetNonZeroBytes(salt);
             }
             return salt;
         }

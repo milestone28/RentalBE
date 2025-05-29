@@ -1,8 +1,11 @@
 ﻿
 
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Rental.Domain.Entities
 {
+    [Table("Customers")]
     public class Customer
     {
         public Guid Id { get; set; } = default!;

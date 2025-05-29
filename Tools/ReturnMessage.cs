@@ -91,6 +91,7 @@ namespace Tools
 
         // 001 Exist
         public static string UserIdExist = "UserID already exist.";
+        public static string EmailExist = "Email already exist.";
         public static string UserAlreadySubscribe = "User has already subscribe.";
         public static string RightsCodeExist = "Rights code already exist.";
         public static string UserIpExist = "User IP already exist.";

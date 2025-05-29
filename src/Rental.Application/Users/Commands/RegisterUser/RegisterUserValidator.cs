@@ -18,7 +18,7 @@ namespace Rental.Application.Users.Commands.RegisterUser
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("Invalid email format.")
                 .MaximumLength(100).WithMessage("Email must not exceed 100 characters.");
-            RuleFor(x => x.username)
+            RuleFor(x => x.user_id)
                 .NotEmpty().WithMessage("Username is required.")
                 .MaximumLength(100).WithMessage("Username must not exceed 100 characters.");
             RuleFor(x => x.password)
@@ -29,7 +29,7 @@ namespace Rental.Application.Users.Commands.RegisterUser
                 .WithMessage("Password must contain at least one digit.")
                 .Must(ContainSpecialCharacter)
                 .WithMessage("Password must contain at least one special character (e.g., !@#$%^&*).");
-            RuleFor(x => x.phone_number)
+            RuleFor(x => x.mobile)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Matches(@"^(?:\+63|0)[\s\-]?[2-9]\d{1,2}[\s\-]?\d{3,4}[\s\-]?\d{4}$").WithMessage("Invalid contact number format. ex. +639123456789");
             RuleFor(x => x.city)

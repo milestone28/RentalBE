@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Rental.Domain.Constants;
 using Rental.Domain.Entities;
 using Rental.Domain.Interfaces;
 using Rental.Infrastructure.Persistence;
 using System.Linq.Expressions;
+using static Tools.Models.sort_direction;
 
 namespace Rental.Infrastructure.Repositories
 {
@@ -12,7 +12,7 @@ namespace Rental.Infrastructure.Repositories
         public async Task<(IEnumerable<Customer>, int)> GetAllCustomers(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection, bool isDeleted)
         {
             string searchPhraseLower = string.IsNullOrEmpty(searchPhrase) ? "" : searchPhrase.ToLower();
-            var baseQuery = _dbContext.Customers.Where(r=> searchPhrase == null && r.IsDeleted == isDeleted || (r.Name.ToLower().Contains(searchPhraseLower)) && r.IsDeleted == isDeleted);
+            var baseQuery = _dbContext.customers_.Where(r=> searchPhrase == null && r.IsDeleted == isDeleted || (r.Name.ToLower().Contains(searchPhraseLower)) && r.IsDeleted == isDeleted);
             var totalCount = await baseQuery.CountAsync();
 
             if (sortBy != null)
@@ -46,20 +46,20 @@ namespace Rental.Infrastructure.Repositories
         }
         public async Task<Customer?> GetCustomersById(Guid id)
         {
-            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            var customer = await _dbContext.customers_.FirstOrDefaultAsync(c => c.Id == id);
             return customer;
         }
 
         public async Task<Guid> CreateCustomer(Customer customer)
         {
-            await _dbContext.Customers.AddAsync(customer);
+            await _dbContext.customers_.AddAsync(customer);
             await _dbContext.SaveChangesAsync();
             return customer.Id;
         }
 
         public async Task DeleteAsync(Customer restaurant)
         {
-            _dbContext.Customers.Remove(restaurant);
+            _dbContext.customers_.Remove(restaurant);
             await _dbContext.SaveChangesAsync();
         }
         public Task SaveChanges()

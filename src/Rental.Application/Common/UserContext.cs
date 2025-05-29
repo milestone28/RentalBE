@@ -1,8 +1,6 @@
 ﻿
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Rental.Domain.Entities;
 using System.Security.Claims;
 
 namespace Rental.Application.Users
